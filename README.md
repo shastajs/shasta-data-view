@@ -10,7 +10,7 @@ This is a work in progress - There is sparse documentation, no tests, and it's n
 npm install shasta-data-view --save
 ```
 
-## Example
+## API
 
 You can define three functions:
 
@@ -29,6 +29,8 @@ You can define three functions:
   - Defaults to displaying nothing
   - Receives an errors Map as an argument
   - Responsible for rendering any errors that happened while fetching data
+
+## Example
 
 ```js
 import React from 'react'
