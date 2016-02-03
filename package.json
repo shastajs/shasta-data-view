@@ -43,8 +43,6 @@
     "docs:publish": "cd _book && git init && git commit --allow-empty -m 'update book' && git checkout -b gh-pages && touch .nojekyll && git add . && git commit -am 'update book' && git push git@github.com:shastajs/shasta-data-view gh-pages --force"
   },
   "peerDependencies": {
-    "react": "^0.14.0",
-    "immutable": "^3.0.0",
     "shasta": "github:shastajs/shasta"
   },
   "devDependencies": {
@@ -108,6 +106,7 @@
     "babel-runtime": "^6.3.19",
     "lodash.pick": "^4.0.1",
     "lodash.reduce": "^4.0.1",
-    "lodash.some": "^4.0.1"
+    "lodash.some": "^4.0.1",
+    "immutable": "^3.0.0"
   }
 }
