@@ -20,21 +20,26 @@ You can define three functions:
   - Responsible for dispatching any actions to fetch data
 - `renderData`
   - Defaults to displaying nothing
+  - Triggered when all storeProps are resolved
   - Receives a data object as an argument
   - Responsible for rendering the data
 - `renderLoader`
   - Defaults to displaying nothing
+  - Triggered when all storeProps are not resolved
   - Responsible for rendering a loader
 - `renderErrors`
   - Defaults to displaying nothing
+  - Triggered when any storeProp value has an `error` attribute
   - Receives an errors Map as an argument
+    - Key is the storeProp
+    - Value is the error object
   - Responsible for rendering any errors that happened while fetching data
 
 ## Example
 
 ```js
 import React from 'react'
-import {PropTypes} from 'shasta'
+import { PropTypes } from 'shasta'
 import DataComponent from 'shasta-data-view'
 import './index.sass'
 
@@ -48,10 +53,10 @@ class UserList extends DataComponent {
   };
 
   fetch () {
-    this.actions.api.users.find({requestId: 'users'})
+    this.actions.api.users.find({ requestId: 'users' })
   }
 
-  renderData ({users}) {
+  renderData ({ users }) {
     return <div className='ui list relaxed column'>
       <div className='ui header'>{users.size} Users</div>
       {
@@ -82,7 +87,6 @@ class UserList extends DataComponent {
 }
 
 export default DataComponent.connect(UserList, require('core/actions'))
-
 ```
 
 [downloads-image]: http://img.shields.io/npm/dm/shasta-data-view.svg
