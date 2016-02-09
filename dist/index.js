@@ -1,5 +1,9 @@
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _keys = require('babel-runtime/core-js/object/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
@@ -23,10 +27,6 @@ var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorRet
 var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 
 var _shasta = require('shasta');
 
@@ -111,13 +111,19 @@ var DataComponent = function (_Component) {
     }
   }, {
     key: 'renderLoader',
-    value: function renderLoader() {}
+    value: function renderLoader() {
+      return null;
+    }
   }, {
     key: 'renderErrors',
-    value: function renderErrors() {}
+    value: function renderErrors() {
+      return null;
+    }
   }, {
     key: 'renderData',
-    value: function renderData() {}
+    value: function renderData() {
+      return null;
+    }
   }, {
     key: 'render',
     value: function render() {

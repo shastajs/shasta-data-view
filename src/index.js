@@ -46,9 +46,15 @@ export default class DataComponent extends Component {
     return pick(this.props, Object.keys(this.constructor.storeProps))
   }
 
-  renderLoader() {}
-  renderErrors() {}
-  renderData() {}
+  renderLoader() {
+    return null
+  }
+  renderErrors() {
+    return null
+  }
+  renderData() {
+    return null
+  }
 
 
   render() {
