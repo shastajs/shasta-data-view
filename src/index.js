@@ -12,8 +12,6 @@ export default class DataComponent extends Component {
     if (!this.constructor.storeProps) {
       throw new Error('DataComponent requires storeProps to be defined!')
     }
-
-    if (this.fetch) this.fetch()
   }
 
   isFetching() {
@@ -56,7 +54,15 @@ export default class DataComponent extends Component {
     return null
   }
 
-
+  checkData() {
+    if (!this.fetch) return
+    const loading = this.getLoadingFields()
+    if (loading.size === 0) return
+    this.fetch()
+  }
+  componentWillMount() {
+    this.checkData()
+  }
   render() {
     return this.isFetching()
       ? this.renderLoader(this.getLoadingFields())

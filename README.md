@@ -16,7 +16,7 @@ You can define three functions:
 
 - `fetch`
   - Defaults to doing nothing
-  - Triggered on construct
+  - Triggered on mount/update when any `storeProps` are not fulfilled
   - Responsible for dispatching any actions to fetch data
 - `renderData`
   - Defaults to displaying nothing

@@ -57,8 +57,6 @@ var DataComponent = function (_Component) {
     if (!_this.constructor.storeProps) {
       throw new Error('DataComponent requires storeProps to be defined!');
     }
-
-    if (_this.fetch) _this.fetch();
     return _this;
   }
 
@@ -123,6 +121,19 @@ var DataComponent = function (_Component) {
     key: 'renderData',
     value: function renderData() {
       return null;
+    }
+  }, {
+    key: 'checkData',
+    value: function checkData() {
+      if (!this.fetch) return;
+      var loading = this.getLoadingFields();
+      if (loading.size === 0) return;
+      this.fetch();
+    }
+  }, {
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      this.checkData();
     }
   }, {
     key: 'render',
