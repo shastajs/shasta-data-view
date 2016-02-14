@@ -63,7 +63,7 @@ export default class DataComponent extends Component {
   componentWillMount() {
     this.checkData()
   }
-  componentWillUpdate() {
+  componentDidUpdate() {
     if (!this.fetched) return
     if (this._fetched) return
     const loading = this.getLoadingFields()

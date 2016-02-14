@@ -136,8 +136,8 @@ var DataComponent = function (_Component) {
       this.checkData();
     }
   }, {
-    key: 'componentWillUpdate',
-    value: function componentWillUpdate() {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate() {
       if (!this.fetched) return;
       if (this._fetched) return;
       var loading = this.getLoadingFields();
