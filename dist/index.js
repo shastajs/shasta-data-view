@@ -75,7 +75,7 @@ var DataComponent = function (_Component) {
       var _this3 = this;
 
       return (0, _lodash6.default)(this.constructor.storeProps, function (cursor, prop) {
-        return _this3.props[prop] && _this3.props[prop].has('error');
+        return _immutable.Iterable.isIterable(_this3.props[prop]) && _this3.props[prop].has('error');
       });
     }
   }, {
@@ -96,7 +96,7 @@ var DataComponent = function (_Component) {
       var _this5 = this;
 
       return (0, _immutable.fromJS)((0, _lodash4.default)(this.constructor.storeProps, function (prev, cursor, prop) {
-        if (_this5.props[prop] && _this5.props[prop].has('error')) {
+        if (_immutable.Iterable.isIterable(_this5.props[prop]) && _this5.props[prop].has('error')) {
           prev[prop] = _this5.props[prop].get('error');
         }
         return prev;
@@ -136,15 +136,15 @@ var DataComponent = function (_Component) {
       this.checkData();
     }
   }, {
-    key: 'componentDidReceiveProps',
-    value: function componentDidReceiveProps() {
+    key: 'componentWillUpdate',
+    value: function componentWillUpdate() {
       if (!this.fetched) return;
       if (this._fetched) return;
       var loading = this.getLoadingFields();
       if (loading.size !== 0) return;
 
-      this.fetched();
       this._fetched = true;
+      this.fetched();
     }
   }, {
     key: 'render',

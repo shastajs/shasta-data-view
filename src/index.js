@@ -1,5 +1,5 @@
 import { Component } from 'shasta'
-import { fromJS } from 'immutable'
+import { fromJS, Iterable } from 'immutable'
 import pick from 'lodash.pick'
 import reduce from 'lodash.reduce'
 import some from 'lodash.some'
@@ -21,7 +21,7 @@ export default class DataComponent extends Component {
   }
   isErrored() {
     return some(this.constructor.storeProps, (cursor, prop) =>
-      this.props[prop] && this.props[prop].has('error')
+      Iterable.isIterable(this.props[prop]) && this.props[prop].has('error')
     )
   }
   getLoadingFields() {
@@ -34,7 +34,7 @@ export default class DataComponent extends Component {
   }
   getErrors() {
     return fromJS(reduce(this.constructor.storeProps, (prev, cursor, prop) => {
-      if (this.props[prop] && this.props[prop].has('error')) {
+      if (Iterable.isIterable(this.props[prop]) && this.props[prop].has('error')) {
         prev[prop] = this.props[prop].get('error')
       }
       return prev
@@ -63,14 +63,14 @@ export default class DataComponent extends Component {
   componentWillMount() {
     this.checkData()
   }
-  componentDidReceiveProps() {
+  componentWillUpdate() {
     if (!this.fetched) return
     if (this._fetched) return
     const loading = this.getLoadingFields()
     if (loading.size !== 0) return
 
-    this.fetched()
     this._fetched = true
+    this.fetched()
   }
 
   render() {
