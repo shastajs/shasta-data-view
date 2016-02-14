@@ -63,6 +63,16 @@ export default class DataComponent extends Component {
   componentWillMount() {
     this.checkData()
   }
+  componentDidReceiveProps() {
+    if (!this.fetched) return
+    if (this._fetched) return
+    const loading = this.getLoadingFields()
+    if (loading.size !== 0) return
+
+    this.fetched()
+    this._fetched = true
+  }
+
   render() {
     return this.isFetching()
       ? this.renderLoader(this.getLoadingFields())

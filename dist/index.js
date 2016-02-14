@@ -136,6 +136,17 @@ var DataComponent = function (_Component) {
       this.checkData();
     }
   }, {
+    key: 'componentDidReceiveProps',
+    value: function componentDidReceiveProps() {
+      if (!this.fetched) return;
+      if (this._fetched) return;
+      var loading = this.getLoadingFields();
+      if (loading.size !== 0) return;
+
+      this.fetched();
+      this._fetched = true;
+    }
+  }, {
     key: 'render',
     value: function render() {
       return this.isFetching() ? this.renderLoader(this.getLoadingFields()) : this.isErrored() ? this.renderErrors(this.getErrors()) : this.renderData(this.getData());
