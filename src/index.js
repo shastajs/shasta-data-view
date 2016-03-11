@@ -40,7 +40,7 @@ export default class DataComponent extends Component {
       return prev
     }, {}))
   }
-  getData() {
+  getResolvedData() {
     return pick(this.props, Object.keys(this.constructor.storeProps))
   }
 
@@ -54,23 +54,23 @@ export default class DataComponent extends Component {
     return null
   }
 
-  checkData() {
-    if (!this.fetch) return
+  tryResolveData() {
+    if (!this.resolveData) return
     const loading = this.getLoadingFields()
     if (loading.size === 0) return
-    this.fetch()
+    this.resolveData()
   }
   componentWillMount() {
-    this.checkData()
+    this.tryResolveData()
   }
   componentDidUpdate() {
-    if (!this.fetched) return
+    if (!this.handleResolved) return
     if (this._fetched) return
     const loading = this.getLoadingFields()
     if (loading.size !== 0) return
 
     this._fetched = true
-    this.fetched()
+    this.handleResolved(this.getResolvedData())
   }
 
   render() {
@@ -78,6 +78,6 @@ export default class DataComponent extends Component {
       ? this.renderLoader(this.getLoadingFields())
       : this.isErrored()
         ? this.renderErrors(this.getErrors())
-        : this.renderData(this.getData())
+        : this.renderData(this.getResolvedData())
   }
 }
