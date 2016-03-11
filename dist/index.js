@@ -55,7 +55,7 @@ var DataComponent = function (_Component) {
     var _this = (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(DataComponent).apply(this, arguments));
 
     if (!_this.constructor.storeProps) {
-      throw new Error('DataComponent requires storeProps to be defined!');
+      throw new Error('DataComponent requires storeProps to be defined! Did you forget to use the connect decorator?');
     }
     return _this;
   }
@@ -103,8 +103,8 @@ var DataComponent = function (_Component) {
       }, {}));
     }
   }, {
-    key: 'getData',
-    value: function getData() {
+    key: 'getResolvedData',
+    value: function getResolvedData() {
       return (0, _lodash2.default)(this.props, (0, _keys2.default)(this.constructor.storeProps));
     }
   }, {
@@ -123,33 +123,33 @@ var DataComponent = function (_Component) {
       return null;
     }
   }, {
-    key: 'checkData',
-    value: function checkData() {
-      if (!this.fetch) return;
+    key: 'tryResolveData',
+    value: function tryResolveData() {
+      if (!this.resolveData) return;
       var loading = this.getLoadingFields();
       if (loading.size === 0) return;
-      this.fetch();
+      this.resolveData();
     }
   }, {
     key: 'componentWillMount',
     value: function componentWillMount() {
-      this.checkData();
+      this.tryResolveData();
     }
   }, {
     key: 'componentDidUpdate',
     value: function componentDidUpdate() {
-      if (!this.fetched) return;
+      if (!this.handleResolved) return;
       if (this._fetched) return;
       var loading = this.getLoadingFields();
       if (loading.size !== 0) return;
 
       this._fetched = true;
-      this.fetched();
+      this.handleResolved(this.getResolvedData());
     }
   }, {
     key: 'render',
     value: function render() {
-      return this.isFetching() ? this.renderLoader(this.getLoadingFields()) : this.isErrored() ? this.renderErrors(this.getErrors()) : this.renderData(this.getData());
+      return this.isFetching() ? this.renderLoader(this.getLoadingFields()) : this.isErrored() ? this.renderErrors(this.getErrors()) : this.renderData(this.getResolvedData());
     }
   }]);
   return DataComponent;

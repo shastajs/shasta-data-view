@@ -10,7 +10,7 @@ export default class DataComponent extends Component {
   constructor() {
     super(...arguments)
     if (!this.constructor.storeProps) {
-      throw new Error('DataComponent requires storeProps to be defined!')
+      throw new Error('DataComponent requires storeProps to be defined! Did you forget to use the connect decorator?')
     }
   }
 
