@@ -32,18 +32,6 @@ var _shasta = require('shasta');
 
 var _immutable = require('immutable');
 
-var _lodash = require('lodash.pick');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-var _lodash3 = require('lodash.reduce');
-
-var _lodash4 = _interopRequireDefault(_lodash3);
-
-var _lodash5 = require('lodash.some');
-
-var _lodash6 = _interopRequireDefault(_lodash5);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var DataComponent = function (_Component) {
@@ -61,51 +49,56 @@ var DataComponent = function (_Component) {
   }
 
   (0, _createClass3.default)(DataComponent, [{
-    key: 'isFetching',
-    value: function isFetching() {
-      var _this2 = this;
-
-      return !this.isErrored() && (0, _lodash6.default)(this.constructor.storeProps, function (cursor, prop) {
-        return typeof _this2.props[prop] === 'undefined';
-      });
+    key: 'isPropResolving',
+    value: function isPropResolving(prop) {
+      return this.props[prop] == null || _immutable.Iterable.isIterable(this.props[prop]) && this.props[prop].get('pending') === true;
+    }
+  }, {
+    key: 'isPropErrored',
+    value: function isPropErrored(prop) {
+      return _immutable.Iterable.isIterable(this.props[prop]) && this.props[prop].get('error') != null;
+    }
+  }, {
+    key: 'isResolving',
+    value: function isResolving() {
+      return !this.isErrored() && !this.getResolvingFields().isEmpty();
     }
   }, {
     key: 'isErrored',
     value: function isErrored() {
-      var _this3 = this;
-
-      return (0, _lodash6.default)(this.constructor.storeProps, function (cursor, prop) {
-        return _immutable.Iterable.isIterable(_this3.props[prop]) && _this3.props[prop].has('error');
-      });
+      return !this.getErrors().isEmpty();
     }
   }, {
-    key: 'getLoadingFields',
-    value: function getLoadingFields() {
-      var _this4 = this;
+    key: 'getResolvingFields',
+    value: function getResolvingFields() {
+      var _this2 = this;
 
-      return (0, _immutable.fromJS)((0, _lodash4.default)(this.constructor.storeProps, function (prev, cursor, prop) {
-        if (typeof _this4.props[prop] === 'undefined') {
-          prev.push(prop);
-        }
-        return prev;
-      }, []));
+      // has keys that are either undefined/null or have a pending = true key
+      return (0, _immutable.fromJS)(this.constructor.storeProps).reduce(function (prev, cursor, prop) {
+        return _this2.isPropResolving(prop) ? prev.push(prop) : prev;
+      }, (0, _immutable.List)());
     }
   }, {
     key: 'getErrors',
     value: function getErrors() {
-      var _this5 = this;
+      var _this3 = this;
 
-      return (0, _immutable.fromJS)((0, _lodash4.default)(this.constructor.storeProps, function (prev, cursor, prop) {
-        if (_immutable.Iterable.isIterable(_this5.props[prop]) && _this5.props[prop].has('error')) {
-          prev[prop] = _this5.props[prop].get('error');
-        }
-        return prev;
-      }, {}));
+      // has keys that have an error = data key
+      return (0, _immutable.fromJS)(this.constructor.storeProps).reduce(function (prev, cursor, prop) {
+        return _this3.isPropErrored(prop) ? prev.set(prop, _this3.props[prop].get('error')) : prev;
+      }, (0, _immutable.Map)());
     }
   }, {
     key: 'getResolvedData',
     value: function getResolvedData() {
-      return (0, _lodash2.default)(this.props, (0, _keys2.default)(this.constructor.storeProps));
+      var _this4 = this;
+
+      return (0, _keys2.default)(this.constructor.storeProps).reduce(function (prev, prop) {
+        if (!_this4.isPropResolving(prop)) {
+          prev[prop] = _this4.props[prop].get('data') || _this4.props[prop];
+        }
+        return prev;
+      }, {});
     }
   }, {
     key: 'renderLoader',
@@ -126,7 +119,7 @@ var DataComponent = function (_Component) {
     key: 'tryResolveData',
     value: function tryResolveData() {
       if (!this.resolveData) return;
-      var loading = this.getLoadingFields();
+      var loading = this.getResolvingFields();
       if (loading.size === 0) return;
       this.resolveData();
     }
@@ -139,17 +132,17 @@ var DataComponent = function (_Component) {
     key: 'componentDidUpdate',
     value: function componentDidUpdate() {
       if (!this.handleResolved) return;
-      if (this._fetched) return;
-      var loading = this.getLoadingFields();
+      if (this._resolved) return;
+      var loading = this.getResolvingFields();
       if (loading.size !== 0) return;
 
-      this._fetched = true;
+      this._resolved = true;
       this.handleResolved(this.getResolvedData());
     }
   }, {
     key: 'render',
     value: function render() {
-      return this.isFetching() ? this.renderLoader(this.getLoadingFields()) : this.isErrored() ? this.renderErrors(this.getErrors()) : this.renderData(this.getResolvedData());
+      return this.isResolving() ? this.renderLoader(this.getResolvingFields()) : this.isErrored() ? this.renderErrors(this.getErrors()) : this.renderData(this.getResolvedData());
     }
   }]);
   return DataComponent;

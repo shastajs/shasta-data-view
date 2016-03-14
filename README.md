@@ -1,6 +1,6 @@
 # shasta-data-view [![NPM version][npm-image]][npm-url] [![Downloads][downloads-image]][npm-url] [![Build Status][travis-image]][travis-url]
 
-Simple component for managing asynchronous data dependency states. If you have a view with 3 base states: fetching, loaded, and errored - this will help you clean up a lot of boilerplate.
+Simple component for managing asynchronous data dependency states. If you have a view with 3 base states: fetching, loaded, and errored - this will help you clean up a lot of boilerplate. Works out of the box with [tahoe](https://github.com/shastajs/tahoe) for doing API stuff.
 
 This is a work in progress - There is sparse documentation, no tests, and it's not on npm. Use at your own risk while we finish up!
 
@@ -14,9 +14,9 @@ npm install shasta-data-view --save
 
 You can define three functions:
 
-- `fetch`
+- `resolveData`
   - Defaults to doing nothing
-  - Triggered on mount/update when any `storeProps` are not fulfilled
+  - Triggered on mount/update when any `storeProps` (what you give to shasta's connect function) are not fulfilled
   - Responsible for dispatching any actions to fetch data
 - `renderData`
   - Defaults to displaying nothing
@@ -49,18 +49,18 @@ class UserList extends DataComponent {
     users: PropTypes.iterable
   };
   static storeProps = {
-    users: 'requests.users'
+    users: 'api.subsets.users'
   };
 
   fetch () {
-    this.actions.api.users.find({ requestId: 'users' })
+    this.actions.api.users.find({ subset: 'users' })
   }
 
   renderData ({ users }) {
     return <div className='ui list relaxed column'>
       <div className='ui header'>{users.size} Users</div>
       {
-        users.map((user) =>
+        users.get('data').map((user) =>
           <div className='ui item' key={user.get('id')}>
             <i className='ui icon large user middle aligned'/>
             <div className='content'>

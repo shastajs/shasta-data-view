@@ -1,8 +1,5 @@
 import { Component } from 'shasta'
-import { fromJS, Iterable } from 'immutable'
-import pick from 'lodash.pick'
-import reduce from 'lodash.reduce'
-import some from 'lodash.some'
+import { fromJS, Iterable, List, Map } from 'immutable'
 
 export default class DataComponent extends Component {
   static displayName = 'DataComponent';
@@ -14,34 +11,41 @@ export default class DataComponent extends Component {
     }
   }
 
-  isFetching() {
-    return !this.isErrored() && some(this.constructor.storeProps, (cursor, prop) =>
-      typeof this.props[prop] === 'undefined'
-    )
+  isPropResolving(prop) {
+    return this.props[prop] == null ||
+      (Iterable.isIterable(this.props[prop]) &&
+      this.props[prop].get('pending') === true)
+  }
+  isPropErrored(prop) {
+    return Iterable.isIterable(this.props[prop]) && this.props[prop].get('error') != null
+  }
+  isResolving() {
+    return !this.isErrored() && !this.getResolvingFields().isEmpty()
   }
   isErrored() {
-    return some(this.constructor.storeProps, (cursor, prop) =>
-      Iterable.isIterable(this.props[prop]) && this.props[prop].has('error')
-    )
+    return !this.getErrors().isEmpty()
   }
-  getLoadingFields() {
-    return fromJS(reduce(this.constructor.storeProps, (prev, cursor, prop) => {
-      if (typeof this.props[prop] === 'undefined') {
-        prev.push(prop)
-      }
-      return prev
-    }, []))
+  getResolvingFields() {
+    // has keys that are either undefined/null or have a pending = true key
+    return fromJS(this.constructor.storeProps).reduce((prev, cursor, prop) =>
+      this.isPropResolving(prop) ? prev.push(prop) : prev
+    , List())
   }
   getErrors() {
-    return fromJS(reduce(this.constructor.storeProps, (prev, cursor, prop) => {
-      if (Iterable.isIterable(this.props[prop]) && this.props[prop].has('error')) {
-        prev[prop] = this.props[prop].get('error')
-      }
-      return prev
-    }, {}))
+    // has keys that have an error = data key
+    return fromJS(this.constructor.storeProps).reduce((prev, cursor, prop) =>
+      this.isPropErrored(prop)
+        ? prev.set(prop, this.props[prop].get('error'))
+        : prev
+    , Map())
   }
   getResolvedData() {
-    return pick(this.props, Object.keys(this.constructor.storeProps))
+    return Object.keys(this.constructor.storeProps).reduce((prev, prop) => {
+      if (!this.isPropResolving(prop)) {
+        prev[prop] = this.props[prop].get('data') || this.props[prop]
+      }
+      return prev
+    }, {})
   }
 
   renderLoader() {
@@ -56,7 +60,7 @@ export default class DataComponent extends Component {
 
   tryResolveData() {
     if (!this.resolveData) return
-    const loading = this.getLoadingFields()
+    const loading = this.getResolvingFields()
     if (loading.size === 0) return
     this.resolveData()
   }
@@ -65,17 +69,17 @@ export default class DataComponent extends Component {
   }
   componentDidUpdate() {
     if (!this.handleResolved) return
-    if (this._fetched) return
-    const loading = this.getLoadingFields()
+    if (this._resolved) return
+    const loading = this.getResolvingFields()
     if (loading.size !== 0) return
 
-    this._fetched = true
+    this._resolved = true
     this.handleResolved(this.getResolvedData())
   }
 
   render() {
-    return this.isFetching()
-      ? this.renderLoader(this.getLoadingFields())
+    return this.isResolving()
+      ? this.renderLoader(this.getResolvingFields())
       : this.isErrored()
         ? this.renderErrors(this.getErrors())
         : this.renderData(this.getResolvedData())
