@@ -94,8 +94,9 @@ var DataComponent = function (_Component) {
       var _this4 = this;
 
       return (0, _keys2.default)(this.constructor.storeProps).reduce(function (prev, prop) {
+        var val = _this4.props[prop];
         if (!_this4.isPropResolving(prop)) {
-          prev[prop] = _this4.props[prop].get('data') || _this4.props[prop];
+          prev[prop] = _immutable.Iterable.isIterable(val) ? val.get('data') || val : val;
         }
         return prev;
       }, {});

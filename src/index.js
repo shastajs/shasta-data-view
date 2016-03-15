@@ -41,8 +41,9 @@ export default class DataComponent extends Component {
   }
   getResolvedData() {
     return Object.keys(this.constructor.storeProps).reduce((prev, prop) => {
+      const val = this.props[prop]
       if (!this.isPropResolving(prop)) {
-        prev[prop] = this.props[prop].get('data') || this.props[prop]
+        prev[prop] = Iterable.isIterable(val) ? val.get('data') || val : val
       }
       return prev
     }, {})
