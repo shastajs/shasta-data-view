@@ -51,7 +51,7 @@ var DataComponent = function (_Component) {
   (0, _createClass3.default)(DataComponent, [{
     key: 'isPropResolving',
     value: function isPropResolving(prop) {
-      return this.props[prop] == null || _immutable.Iterable.isIterable(this.props[prop]) && this.props[prop].get('pending') === true;
+      return typeof this.props[prop] === 'undefined' || _immutable.Iterable.isIterable(this.props[prop]) && this.props[prop].get('pending') === true;
     }
   }, {
     key: 'isPropErrored',

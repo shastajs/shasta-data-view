@@ -12,7 +12,7 @@ export default class DataComponent extends Component {
   }
 
   isPropResolving(prop) {
-    return this.props[prop] == null ||
+    return typeof this.props[prop] === 'undefined' ||
       (Iterable.isIterable(this.props[prop]) &&
       this.props[prop].get('pending') === true)
   }
