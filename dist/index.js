@@ -40,7 +40,7 @@ var DataComponent = function (_Component) {
   function DataComponent() {
     (0, _classCallCheck3.default)(this, DataComponent);
 
-    var _this = (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(DataComponent).apply(this, arguments));
+    var _this = (0, _possibleConstructorReturn3.default)(this, (DataComponent.__proto__ || (0, _getPrototypeOf2.default)(DataComponent)).apply(this, arguments));
 
     if (!_this.constructor.storeProps) {
       throw new Error('DataComponent requires storeProps to be defined! Did you forget to use the connect decorator?');

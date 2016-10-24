@@ -1,6 +1,6 @@
 {
   "name": "shasta-data-view",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Lightweight data view abstraction for managing fetching/loaded/errored states for remote data",
   "main": "dist/index.js",
   "keywords": [
@@ -69,6 +69,7 @@
     "mocha": "^2.3.4",
     "mochify": "dylanfm/mochify.js",
     "react": "^0.14.7",
+    "react-dom": "^15.3.2",
     "rimraf": "^2.5.0",
     "shasta": "shastajs/shasta",
     "should": "^8.0.0"

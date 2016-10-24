@@ -39,54 +39,46 @@ You can define three functions:
 
 ```js
 import React from 'react'
-import { PropTypes } from 'shasta'
+import { PropTypes, connect } from 'shasta'
+import actions from 'core/actions'
 import DataComponent from 'shasta-data-view'
-import './index.sass'
 
+@connect({ users: 'api.subsets.users' })
 class UserList extends DataComponent {
   static displayName = 'UserList';
   static propTypes = {
     users: PropTypes.iterable
   };
-  static storeProps = {
-    users: 'api.subsets.users'
-  };
 
-  fetch () {
-    this.actions.api.users.find({ subset: 'users' })
+  resolveData () {
+    actions.api.users.find({ subset: 'users' })
   }
 
   renderData ({ users }) {
-    return <div className='ui list relaxed column'>
-      <div className='ui header'>{users.size} Users</div>
+    return (<div>
+      <h1>{users.size} Users</h1>
+      <ul>
       {
-        users.get('data').map((user) =>
-          <div className='ui item' key={user.get('id')}>
-            <i className='ui icon large user middle aligned'/>
-            <div className='content'>
-              <div className='ui header'>{user.get('name')}</div>
-            </div>
-          </div>
+        users.map((user) =>
+          <li key={user.get('id')}>{user.get('name')}</li>
         )
       }
-    </div>
+      </ul>
+    </div>)
   }
   renderLoader () {
-    return <div className='ui header'>Loading...</div>
+    return <h1>Loading...</h1>
   }
   renderErrors (errors) {
-    return <div className='errors'>
-      Failed to Load:
+    return (<ul>
       {
         errors.map((err, field) =>
-          <div key={field}>{field}: {err.message}</div>
+          <li key={field}>{field}: {err.message}</li>
         ).toArray()
       }
-    </div>
+    </ul>)
   }
 }
-
-export default DataComponent.connect(UserList, require('core/actions'))
 ```
 
 [downloads-image]: http://img.shields.io/npm/dm/shasta-data-view.svg
