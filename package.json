@@ -1,6 +1,6 @@
 {
   "name": "shasta-data-view",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Lightweight data view abstraction for managing fetching/loaded/errored states for remote data",
   "main": "dist/index.js",
   "keywords": [
@@ -43,7 +43,7 @@
     "docs:publish": "cd _book && git init && git commit --allow-empty -m 'update book' && git checkout -b gh-pages && touch .nojekyll && git add . && git commit -am 'update book' && git push git@github.com:shastajs/shasta-data-view gh-pages --force"
   },
   "peerDependencies": {
-    "shasta": "shastajs/shasta"
+    "shasta": "*"
   },
   "devDependencies": {
     "babel": "^6.3.26",
